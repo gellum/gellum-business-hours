@@ -75,10 +75,11 @@ You can use the shortcode `[gellum_business_hours]` in any page, post, or widget
 == Changelog ==
 
 = 1.3.5 (Current May 21, 2025) =
-* Verifica si WooCommerce está instalado.
-* Advertencia de instalación de WooCommerce requerido.
+* The plugin checks if WordPress has a compatible, installed, and active version of WooCommerce.
+* Minor changes in CSS
+* Github post https://github.com/gellum/Gellum-Business-Hours
 
-= 1.3.4 (Stable May 20, 2025) =
+= 1.3.4 (May 20, 2025) =
 * New shortcode `[gellum_business_hours]`. The previous shortcode is no longer available.
 * CSS update, removing `!important;`. For styling the shortcode output with classes `.gellum-business-hours-open` and `.gellum-business-hours-closed`.
 
