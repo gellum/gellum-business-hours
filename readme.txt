@@ -2,13 +2,13 @@
 Contributors: Gellum
 Tags: woocommerce, business hours, opening hours, ecommerce
 Donate link: https://gellum.com/opensource
-Requires at least: 5.0
+Requires at least: 6.2
 Tested up to: 6.8
 Stable tag: 1.3.5
 Requires PHP: 7.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-WC requires at least: 3.0
+WC requires at least: 7.8
 WC tested up to: 9.8.1
 
 Manage your WooCommerce store's business hours. Disable checkout and display notices when the store is closed, indicating the next opening time.
