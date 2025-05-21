@@ -1,6 +1,5 @@
 /* Gellum Business Hours - Admin Styles */
 
-/* Apply Readex Pro font to the settings page */
 .gellum-business-hours-page,
 .gellum-business-hours-page h1,
 .gellum-business-hours-page p,
@@ -137,10 +136,9 @@
     border-color: #005cb9;
 }
 
-/* WordPress Admin overrides if necessary - be careful */
-.gellum-business-hours-page .form-table { /* Remove default WP form-table top margin if it's too much */
+.gellum-business-hours-page .form-table { 
     margin-top: 0;
 }
-.gellum-business-hours-page .widefat { /* Override default widefat styles if needed */
+.gellum-business-hours-page .widefat { 
     border: none; 
 }
