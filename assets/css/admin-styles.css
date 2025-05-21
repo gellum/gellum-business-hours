@@ -1,0 +1,146 @@
+/* Gellum Business Hours - Admin Styles */
+
+/* Apply Readex Pro font to the settings page */
+.gellum-business-hours-page,
+.gellum-business-hours-page h1,
+.gellum-business-hours-page p,
+.gellum-business-hours-page th,
+.gellum-business-hours-page td,
+.gellum-business-hours-page select,
+.gellum-business-hours-page .button {
+    font-family: 'Readex Pro', sans-serif;
+}
+
+.gellum-business-hours-wrap {
+    max-width: 900px; /* Or adjust to your preference */
+    margin-top: 20px;
+}
+
+.gellum-business-hours-page h1 {
+    font-weight: 500; /* Adjust as per image */
+    font-size: 24px;  /* Adjust as per image */
+    margin-bottom: 8px;
+}
+
+.gellum-business-hours-page .gellum-description {
+    font-size: 14px;
+    color: #50575e; /* WordPress secondary text color */
+    margin-bottom: 25px;
+}
+
+.gellum-settings-table-container {
+    background-color: #fff;
+    border: 1px solid #ccd0d4; /* WordPress table border color */
+    border-radius: 8px; /* Rounded corners for the container */
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    padding: 20px; /* Padding inside the container */
+    margin-bottom: 20px;
+}
+
+.gellum-business-hours-table {
+    width: 100%;
+    border: none; /* Remove default form-table border */
+    margin-top: 0; /* Remove margin from default form-table */
+}
+
+.gellum-business-hours-table thead th {
+    font-weight: 500; /* Bolder headers */
+    font-size: 13px;
+    color: #222; /* Darker color for headers */
+    border-bottom: 1px solid #e0e0e0; /* Separator line */
+    padding: 12px 10px;
+    text-align: left;
+    background-color: transparent; /* Remove default grey */
+}
+
+.gellum-business-hours-table tbody tr {
+    border-bottom: 1px solid #f0f0f0; /* Lighter separator for rows */
+}
+.gellum-business-hours-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.gellum-business-hours-table td {
+    padding: 15px 10px;
+    vertical-align: middle;
+    font-size: 14px;
+    color: #333;
+}
+
+.gellum-business-hours-table .gellum-day-cell span {
+    font-weight: 500; /* Make day name slightly bolder */
+}
+
+/* Status Indicator and Select */
+.gellum-business-hours-table .gellum-status-cell {
+    display: flex;
+    align-items: center;
+}
+
+.gellum-business-hours-table .status-indicator {
+    display: inline-block;
+    width: 8px;  /* Smaller dot */
+    height: 8px; /* Smaller dot */
+    border-radius: 50%;
+    margin-right: 8px; /* Space between dot and select */
+    flex-shrink: 0;
+}
+
+.gellum-business-hours-table .status-indicator.open {
+    background-color: #28a745; /* Green similar to image */
+}
+
+.gellum-business-hours-table .status-indicator.closed {
+    background-color: #dc3545; /* Red similar to image */
+}
+
+.gellum-business-hours-table .gellum-status-select,
+.gellum-business-hours-table .gellum-time-cell select {
+    min-width: 100px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    padding: 6px 8px;
+    font-size: 14px;
+    background-color: #fff; /* Ensure selects have white background */
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.07);
+}
+
+.gellum-business-hours-table .gellum-status-select {
+     /* The "Open" / "Close" text is part of the select itself */
+}
+
+
+/* Time cells - ensure selects fill available space or have a good min-width */
+.gellum-business-hours-table .gellum-time-cell select {
+    min-width: 120px; /* Adjust as needed */
+}
+
+/* Save Changes Button Container */
+.gellum-submit-button-container {
+    margin-top: 20px;
+    text-align: right; /* Align button to the right */
+}
+
+.gellum-business-hours-page .gellum-save-button.button-primary {
+    background-color: #0073e6; /* Blue color from image */
+    border-color: #0073e6;
+    border-radius: 6px; /* Rounded corners for button */
+    padding: 8px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 1px 0 #006799;
+    text-shadow: 0 -1px 1px #006799, 1px 0 1px #006799, 0 1px 1px #006799, -1px 0 1px #006799;
+}
+
+.gellum-business-hours-page .gellum-save-button.button-primary:hover {
+    background-color: #005cb9;
+    border-color: #005cb9;
+}
+
+/* WordPress Admin overrides if necessary - be careful */
+.gellum-business-hours-page .form-table { /* Remove default WP form-table top margin if it's too much */
+    margin-top: 0;
+}
+.gellum-business-hours-page .widefat { /* Override default widefat styles if needed */
+    border: none; 
+}
