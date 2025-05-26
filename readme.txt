@@ -1,15 +1,15 @@
-=== Gellum Business Hours ===
-Contributors: Gellum
+=== Gellum Business Hours for WooCommerce ===
+Contributors: gellum, venywest
 Tags: woocommerce, business hours, opening hours, ecommerce
 Donate link: https://gellum.com/opensource
 Requires at least: 6.2
 Tested up to: 6.8
-Stable tag: 1.3.5
+Stable tag: 1.3.6
 Requires PHP: 7.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 WC requires at least: 7.8
-WC tested up to: 9.8.1
+WC tested up to: 9.8
 
 Manage your WooCommerce store's business hours. Disable checkout and display notices when the store is closed, indicating the next opening time.
 
@@ -74,7 +74,10 @@ You can use the shortcode `[gellum_business_hours]` in any page, post, or widget
 
 == Changelog ==
 
-= 1.3.5 (Current May 21, 2025) =
+= 1.3.6 (May 25, 2025) =
+* Minor fixes
+
+= 1.3.5 (May 21, 2025) =
 * The plugin checks if WordPress has a compatible, installed, and active version of WooCommerce.
 * Minor changes in CSS
 * Github post https://github.com/gellum/Gellum-Business-Hours
@@ -137,7 +140,7 @@ You can use the shortcode `[gellum_business_hours]` in any page, post, or widget
 == Upgrade Notice ==
 
 = 1.3.4 =
-This version includes a change to the shortcode if you're using an older version. (From [gellum_store_status] to [gellum_business_hours]). The reason is to make it easier to match with the rest of the plugin and avoid confusion when adding the shortcode to a new page or section within WordPress.
+This version includes a change to the shortcode if you're using an older version. (From [gellum_store_status] to [gellum_business_hours]).
 
 = 1.1.0 =
 This version includes a name change for the plugin (from Gellum Horarios to Gellum Business Hours) and updates to internal option names. If you were using a previous version, your settings will need to be reconfigured under WooCommerce > Business Hours.
