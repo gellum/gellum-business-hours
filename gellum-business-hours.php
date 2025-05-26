@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name:       Gellum Business Hours
+ * Plugin Name:       Gellum Business Hours for WooCommerce
  * Plugin URI:        https://wordpress.org/plugins/gellum-business-hours/
  * Description:       Manage your WooCommerce store's business hours. Disable checkout and display notices when closed. Shortcode [gellum_business_hours]
- * Version:           1.3.5
+ * Version:           1.3.6
  * Author:            Gellum
  * Author URI:        https://gellum.com/opensource
  * License:           GPL v2 or later
@@ -11,58 +11,47 @@
  * Text Domain:       gellum-business-hours
  * Domain Path:       /languages
  * WC requires at least: 7.8
- * WC tested up to: 9.8.1
+ * WC tested up to: 9.8
  * Requires PHP: 7.2
  * Requires at least: 6.2
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit; // Exit if accessed directly.
+    exit;
 }
 
-/**
- * Check if WooCommerce is active
- */
 function gellum_business_hours_check_woocommerce_active() {
     if ( ! in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
-        // WooCommerce is not active
         add_action( 'admin_notices', 'gellum_business_hours_woocommerce_required_notice' );
         return false;
     }
     return true;
 }
 
-/**
- * Display admin notice if WooCommerce is not active
- */
 function gellum_business_hours_woocommerce_required_notice() {
     ?>
     <div class="notice notice-error">
-        <p><?php _e( '<strong>Gellum Business Hours</strong> requires WooCommerce to be installed and activated. Please install and activate <a href="https://wordpress.org/plugins/woocommerce/" target="_blank">WooCommerce</a> first.', 'gellum-business-hours' ); ?></p>
+        <p><?php esc_html_e( 'Gellum Business Hours requires WooCommerce to be installed and activated. Please install and activate WooCommerce first.', 'gellum-business-hours' ); ?> <a href="https://wordpress.org/plugins/woocommerce/" target="_blank"><?php esc_html_e('WooCommerce', 'gellum-business-hours'); ?></a></p>
     </div>
     <?php
 }
 
-/**
- * Activation hook - check for WooCommerce
- */
 function gellum_business_hours_activation_check() {
     if ( ! gellum_business_hours_check_woocommerce_active() ) {
-        // Optionally deactivate plugin if WooCommerce is not active
+
         deactivate_plugins( plugin_basename( __FILE__ ) );
-        wp_die( __( 'Gellum Business Hours requires WooCommerce to be installed and activated. Please install and activate WooCommerce first.', 'gellum-business-hours' ) );
+        wp_die( esc_html__( 'Gellum Business Hours requires WooCommerce to be installed and activated. Please install and activate WooCommerce first.', 'gellum-business-hours' ) );
     }
 }
 register_activation_hook( __FILE__, 'gellum_business_hours_activation_check' );
 
-// Only load plugin class if WooCommerce is active
 if ( gellum_business_hours_check_woocommerce_active() ) {
 
     if ( ! class_exists( 'Gellum_Business_Hours' ) ) :
 
     final class Gellum_Business_Hours {
 
-        public $version = '1.3.5'; // Version updated
+        public $version = '1.3.6'; /* Updated in readme.txt and gellum-business-hours.php*/
         protected static $_instance = null;
 
         public static function instance() {
@@ -104,12 +93,10 @@ if ( gellum_business_hours_check_woocommerce_active() ) {
             add_action( 'admin_init', array( $this, 'register_settings' ) );
 
             add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
-            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_public_assets' ) ); // Enqueue public styles
+            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_public_assets' ) );
 
-            // Shortcode
             add_shortcode( 'gellum_business_hours', array( $this, 'render_store_status_shortcode' ) );
 
-            // WooCommerce hooks
             add_action( 'woocommerce_check_cart_items', array( $this, 'check_store_open_status_on_checkout' ) );
             add_action( 'woocommerce_before_checkout_form', array( $this, 'display_store_closed_notice_checkout_page' ), 5 );
             add_action( 'woocommerce_before_cart', array( $this, 'display_store_closed_notice_cart_page' ), 5 );
@@ -120,9 +107,10 @@ if ( gellum_business_hours_check_woocommerce_active() ) {
 
             if ( $hook_suffix == $plugin_page_hook ) {
                 wp_enqueue_style(
-                    'gellum-business-hours-google-font-readex-pro-admin', // Unique handle for admin
+                    'gellum-business-hours-google-font-readex-pro-admin',
                     'https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&display=swap',
-                    array(), null
+                    array(),
+                    GELLUM_BUSINESS_HOURS_VERSION
                 );
                 wp_enqueue_style(
                     GELLUM_BUSINESS_HOURS_SLUG . '-admin-styles',
@@ -133,15 +121,12 @@ if ( gellum_business_hours_check_woocommerce_active() ) {
             }
         }
 
-        /**
-         * Enqueue public-facing scripts and styles.
-         */
         public function enqueue_public_assets() {
 
             wp_enqueue_style(
                 GELLUM_BUSINESS_HOURS_SLUG . '-public-styles',
                 GELLUM_BUSINESS_HOURS_PLUGIN_URI . 'assets/css/public-styles.css',
-                array(), 
+                array(),
                 GELLUM_BUSINESS_HOURS_VERSION
             );
         }
@@ -156,18 +141,16 @@ if ( gellum_business_hours_check_woocommerce_active() ) {
 
             if ( $this->is_store_open() ) {
                 $css_class = 'gellum-business-hours-open';
-                $output_text = __( 'Open', 'gellum-business-hours' );
+                $output_text = esc_html__( 'Open', 'gellum-business-hours' );
 
-                // Check for "closing soon" only for same-day schedules
                 $timezone = $this->get_wp_timezone();
                 $current_dt = new DateTime('now', $timezone);
                 $current_day_key = strtolower($current_dt->format('l'));
-                
+
                 if (isset($settings[$current_day_key . '_opens']) && isset($settings[$current_day_key . '_closes'])) {
                     $opens_str = $settings[$current_day_key . '_opens'];
                     $closes_str = $settings[$current_day_key . '_closes'];
 
-                    // Check if it's a same-day schedule (not overnight)
                     if (strtotime($closes_str) > strtotime($opens_str)) {
                         $closing_dt_today = DateTime::createFromFormat('Y-m-d H:i', $current_dt->format('Y-m-d') . ' ' . $closes_str, $timezone);
                         if ($closing_dt_today && $closing_dt_today > $current_dt) {
@@ -176,8 +159,7 @@ if ( gellum_business_hours_check_woocommerce_active() ) {
 
                             if ($minutes_to_close > 0 && $minutes_to_close <= 60) {
                                 $output_text = sprintf(
-                                    // translators: %d is the number of minutes.
-                                    _n(
+                                   /* translators: Use of minutes (%d) in singular and plural.*/ _n(
                                         'Closing in %d minute',
                                         'Closing in %d minutes',
                                         $minutes_to_close,
@@ -192,17 +174,16 @@ if ( gellum_business_hours_check_woocommerce_active() ) {
             } else {
                 $css_class = 'gellum-business-hours-closed';
                 $next_opening_message_full = $this->get_next_opening_time_message();
-                
-                // Attempt to make the "Closed" message more concise with next opening time
-                $closed_text = __('Closed', 'gellum-business-hours');
-                $prefix_to_remove = __('The store is currently closed. ', 'gellum-business-hours');
-                
+
+                $closed_text = esc_html__('Closed', 'gellum-business-hours');
+                $prefix_to_remove = esc_html__('The store is currently closed. ', 'gellum-business-hours');
+
                 if (strpos($next_opening_message_full, $prefix_to_remove) === 0) {
                     $next_opening_details = substr($next_opening_message_full, strlen($prefix_to_remove));
-                     // $next_opening_details will be like "Next opening: Today at HH:MM." or "Next opening: Day at HH:MM."
+
                     $output_text = $closed_text . '. ' . $next_opening_details;
                 } else {
-                    // For messages like "Business hours have not been configured yet." or "The store will remain closed..."
+
                     $output_text = $closed_text . '. ' . $next_opening_message_full;
                 }
             }
@@ -210,7 +191,7 @@ if ( gellum_business_hours_check_woocommerce_active() ) {
             if ( ! empty($output_text) ) {
                 return '<span class="gellum-business-hours-status ' . esc_attr($css_class) . '">' . esc_html($output_text) . '</span>';
             }
-            return ''; // Return empty if no status could be determined (should not happen ideally)
+            return '';
         }
 
         public function declare_hpos_compatibility() {
@@ -220,14 +201,13 @@ if ( gellum_business_hours_check_woocommerce_active() ) {
         }
 
         public function on_plugins_loaded() {
-            load_plugin_textdomain( 'gellum-business-hours', false, dirname( plugin_basename( GELLUM_BUSINESS_HOURS_PLUGIN_FILE ) ) . '/languages' );
         }
 
         public function admin_menu() {
             add_submenu_page(
                 'woocommerce',
-                __( 'Gellum Business Hours Settings', 'gellum-business-hours' ),
-                __( 'Business Hours', 'gellum-business-hours' ),
+                esc_html__( 'Gellum Business Hours Settings', 'gellum-business-hours' ),
+                esc_html__( 'Business Hours', 'gellum-business-hours' ),
                 'manage_woocommerce',
                 GELLUM_BUSINESS_HOURS_SLUG . '-settings',
                 array( $this, 'settings_page_html' )
@@ -248,7 +228,7 @@ if ( gellum_business_hours_check_woocommerce_active() ) {
 
             foreach ( $days as $day ) {
                 $sanitized_input[ $day . '_enabled' ] = isset( $input[ $day . '_enabled' ] ) ? (bool) $input[ $day . '_enabled' ] : false;
-                
+
                 if ( isset( $input[ $day . '_opens' ] ) && preg_match( '/^([01]?[0-9]|2[0-3]):([0-5][0-9])$/', $input[ $day . '_opens' ] ) ) {
                     $sanitized_input[ $day . '_opens' ] = sanitize_text_field( $input[ $day . '_opens' ] );
                 } else {
@@ -267,9 +247,9 @@ if ( gellum_business_hours_check_woocommerce_active() ) {
             $field_name = GELLUM_BUSINESS_HOURS_OPTION_NAME . '[' . esc_attr( $day_key ) . '_' . esc_attr( $type ) . ']';
             $current_value = isset( $options[ $day_key . '_' . $type ] ) ? $options[ $day_key . '_' . $type ] : ( $type === 'opens' ? '09:00' : '17:00' );
 
-            $html = '<select name="' . esc_attr( $field_name ) . '" class="gellum-time-select">';
+            $html = '<select name="' . esc_attr( $field_name ) . '" class="gellum-time-select">'; /* Adds a specific CSS class `gellum-time-select` to time dropdowns.*/
             for ( $h = 0; $h < 24; $h++ ) {
-                for ( $m = 0; $m < 60; $m += 15 ) {
+                for ( $m = 0; $m < 60; $m += 15 ) { /* Time selection in 15-minute intervals using a 24-hour format.*/
                     $time = sprintf( '%02d:%02d', $h, $m );
                     $html .= '<option value="' . esc_attr( $time ) . '" ' . selected( $current_value, $time, false ) . '>' . esc_html( $time ) . '</option>';
                 }
@@ -287,19 +267,19 @@ if ( gellum_business_hours_check_woocommerce_active() ) {
             ?>
             <div class="wrap gellum-business-hours-wrap gellum-business-hours-page">
                 <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-                <p class="gellum-description"><?php _e( 'Configure the weekly opening hours for your store. When the store is closed, checkout will be disabled and customers will be notified.', 'gellum-business-hours' ); ?></p>
-                
+                <p class="gellum-description"><?php echo esc_html__( 'Configure the weekly opening hours for your store. When the store is closed, checkout will be disabled and customers will be notified.', 'gellum-business-hours' ); ?></p>
+
                 <form action="options.php" method="post" class="gellum-settings-form">
                     <?php settings_fields( GELLUM_BUSINESS_HOURS_SLUG . '_options_group' ); ?>
-                    
+
                     <div class="gellum-settings-table-container">
                         <table class="form-table gellum-business-hours-table widefat">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="gellum-day-col"><?php _e( 'Day', 'gellum-business-hours' ); ?></th>
-                                    <th scope="col" class="gellum-status-col"><?php _e( 'Status', 'gellum-business-hours' ); ?></th>
-                                    <th scope="col" class="gellum-time-col"><?php _e( 'Opening', 'gellum-business-hours' ); ?></th>
-                                    <th scope="col" class="gellum-time-col"><?php _e( 'Closing', 'gellum-business-hours' ); ?></th>
+                                    <th scope="col" class="gellum-day-col"><?php echo esc_html__( 'Day', 'gellum-business-hours' ); ?></th>
+                                    <th scope="col" class="gellum-status-col"><?php echo esc_html__( 'Status', 'gellum-business-hours' ); ?></th>
+                                    <th scope="col" class="gellum-time-col"><?php echo esc_html__( 'Opening', 'gellum-business-hours' ); ?></th>
+                                    <th scope="col" class="gellum-time-col"><?php echo esc_html__( 'Closing', 'gellum-business-hours' ); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -309,16 +289,24 @@ if ( gellum_business_hours_check_woocommerce_active() ) {
                                         <td class="gellum-day-cell"><span><?php echo esc_html( $day_name ); ?></span></td>
                                         <td class="gellum-status-cell">
                                             <span class="status-indicator <?php echo $is_enabled ? 'open' : 'closed'; ?>"></span>
-                                            <select name="<?php echo GELLUM_BUSINESS_HOURS_OPTION_NAME . '[' . esc_attr( $day_key ) . '_enabled]'; ?>" class="gellum-status-select">
-                                                <option value="1" <?php selected( $is_enabled, true ); ?>><?php _e( 'Open', 'gellum-business-hours' ); ?></option>
-                                                <option value="0" <?php selected( $is_enabled, false ); ?>><?php _e( 'Closed', 'gellum-business-hours' ); ?></option>
+                                            <select name="<?php echo esc_attr( GELLUM_BUSINESS_HOURS_OPTION_NAME . '[' . $day_key . '_enabled]' ); ?>" class="gellum-status-select">
+                                                <option value="1" <?php selected( $is_enabled, true ); ?>><?php echo esc_html__( 'Open', 'gellum-business-hours' ); ?></option>
+                                                <option value="0" <?php selected( $is_enabled, false ); ?>><?php echo esc_html__( 'Closed', 'gellum-business-hours' ); ?></option>
                                             </select>
                                         </td>
                                         <td class="gellum-time-cell">
-                                            <?php echo $this->render_time_select_field_html( $options, $day_key, 'opens' ); ?>
+                                            <?php
+                                            $opens_html = $this->render_time_select_field_html( $options, $day_key, 'opens' );
+                                            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The output is already escaped within render_time_select_field_html().
+                                            echo $opens_html;
+                                            ?>
                                         </td>
                                         <td class="gellum-time-cell">
-                                            <?php echo $this->render_time_select_field_html( $options, $day_key, 'closes' ); ?>
+                                            <?php
+                                            $closes_html = $this->render_time_select_field_html( $options, $day_key, 'closes' );
+                                            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The output is already escaped within render_time_select_field_html().
+                                            echo $closes_html;
+                                            ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -326,22 +314,22 @@ if ( gellum_business_hours_check_woocommerce_active() ) {
                         </table>
                     </div>
                     <div class="gellum-submit-button-container">
-                        <?php submit_button( __( 'Save changes', 'gellum-business-hours' ), 'primary gellum-save-button' ); ?>
+                        <?php submit_button( esc_html__( 'Save changes', 'gellum-business-hours' ), 'primary gellum-save-button' ); ?>
                     </div>
                 </form>
             </div>
             <?php
         }
-        
+
         private function get_days_of_week() {
             return array(
-                'monday'    => __( 'Monday', 'gellum-business-hours' ),
-                'tuesday'   => __( 'Tuesday', 'gellum-business-hours' ),
-                'wednesday' => __( 'Wednesday', 'gellum-business-hours' ),
-                'thursday'  => __( 'Thursday', 'gellum-business-hours' ),
-                'friday'    => __( 'Friday', 'gellum-business-hours' ),
-                'saturday'  => __( 'Saturday', 'gellum-business-hours' ),
-                'sunday'    => __( 'Sunday', 'gellum-business-hours' ),
+                'monday'    => esc_html__( 'Monday', 'gellum-business-hours' ),
+                'tuesday'   => esc_html__( 'Tuesday', 'gellum-business-hours' ),
+                'wednesday' => esc_html__( 'Wednesday', 'gellum-business-hours' ),
+                'thursday'  => esc_html__( 'Thursday', 'gellum-business-hours' ),
+                'friday'    => esc_html__( 'Friday', 'gellum-business-hours' ),
+                'saturday'  => esc_html__( 'Saturday', 'gellum-business-hours' ),
+                'sunday'    => esc_html__( 'Sunday', 'gellum-business-hours' ),
             );
         }
 
@@ -360,35 +348,37 @@ if ( gellum_business_hours_check_woocommerce_active() ) {
 
         public function is_store_open() {
             $settings = get_option( GELLUM_BUSINESS_HOURS_OPTION_NAME, array() );
-            $timezone = $this->get_wp_timezone();
+            $timezone = $this->get_wp_timezone(); /* Uses the timezone configured in WordPress settings.*/
             $current_time = new DateTime( 'now', $timezone );
             $current_day_key = strtolower( $current_time->format( 'l' ) );
-            $current_time_str = $current_time->format( 'H:i' );
-        
+
             if ( ! isset( $settings[ $current_day_key . '_enabled' ] ) || ! $settings[ $current_day_key . '_enabled' ] ) {
                 return false;
             }
-        
+
+            $current_time_str = $current_time->format( 'H:i' );
+
             $opens_str = isset( $settings[ $current_day_key . '_opens' ] ) ? $settings[ $current_day_key . '_opens' ] : '09:00';
             $closes_str = isset( $settings[ $current_day_key . '_closes' ] ) ? $settings[ $current_day_key . '_closes' ] : '17:00';
-        
+
             if ( $opens_str === $closes_str ) {
                 return $opens_str === '00:00';
             }
-        
+
             if ( strtotime( $closes_str ) < strtotime( $opens_str ) ) {
+                // Handles overnight schedules (e.g., open Monday 10 PM, close Tuesday 2 AM).
                 if ( $current_time_str >= $opens_str || $current_time_str < $closes_str ) {
                     if ( $current_time_str < $closes_str ) {
                         $yesterday_dt = new DateTime( 'yesterday', $timezone );
                         $yesterday_key = strtolower( $yesterday_dt->format( 'l' ) );
-        
+
                         if ( ! isset( $settings[ $yesterday_key . '_enabled' ] ) || ! $settings[ $yesterday_key . '_enabled' ] ) {
                             return false;
                         }
-        
+
                         $yesterday_opens_str = isset( $settings[ $yesterday_key . '_opens' ] ) ? $settings[ $yesterday_key . '_opens' ] : '00:00';
                         $yesterday_closes_str = isset( $settings[ $yesterday_key . '_closes' ] ) ? $settings[ $yesterday_key . '_closes' ] : '23:59';
-        
+
                         if ( !(strtotime( $yesterday_closes_str ) < strtotime( $yesterday_opens_str ) && $yesterday_closes_str === $closes_str) ) {
                             return false;
                         }
@@ -397,32 +387,32 @@ if ( gellum_business_hours_check_woocommerce_active() ) {
                 }
                 return false;
             }
-        
+
             return ( $current_time_str >= $opens_str && $current_time_str < $closes_str );
         }
 
         public function get_next_opening_time_message() {
             $settings = get_option( GELLUM_BUSINESS_HOURS_OPTION_NAME, array() );
             if (empty($settings)) {
-                return __( 'Business hours have not been configured yet.', 'gellum-business-hours' );
+                return esc_html__( 'Business hours have not been configured yet.', 'gellum-business-hours' );
             }
 
             $timezone = $this->get_wp_timezone();
             $current_dt = new DateTime( 'now', $timezone );
-            
+
             for ( $i = 0; $i < 7; $i++ ) {
                 $check_dt = clone $current_dt;
-                if ($i > 0) { 
+                if ($i > 0) {
                      $check_dt->modify( "+{$i} day" )->setTime(0,0,0);
                 }
 
-                $day_key = strtolower( $check_dt->format( 'l' ) ); 
+                $day_key = strtolower( $check_dt->format( 'l' ) );
 
                 if ( isset( $settings[ $day_key . '_enabled' ] ) && $settings[ $day_key . '_enabled' ] ) {
                     $opens_str = isset($settings[ $day_key . '_opens' ]) ? $settings[ $day_key . '_opens' ] : '00:00';
                     $next_opening_dt = DateTime::createFromFormat('Y-m-d H:i', $check_dt->format('Y-m-d') . ' ' . $opens_str, $timezone);
 
-                    if (!$next_opening_dt) continue; 
+                    if (!$next_opening_dt) continue;
 
                     if ( ($i === 0 && $next_opening_dt > $current_dt) || $i > 0) {
                         $time_format = get_option( 'time_format', 'g:i a' );
@@ -431,20 +421,21 @@ if ( gellum_business_hours_check_woocommerce_active() ) {
 
                         if ($check_dt->format('Y-m-d') === $current_dt->format('Y-m-d')) {
                             return sprintf(
-                                __( 'The store is currently closed. Next opening: Today at %s.', 'gellum-business-hours' ),
+                               /* translators: customers of the next available date and time the store will be open. */ esc_html__( 'The store is currently closed. Next opening: Today at %s.', 'gellum-business-hours' ),
                                 $time_localized
                             );
                         } else {
+                            
                              return sprintf(
-                                __( 'The store is currently closed. Next opening: %1$s at %2$s.', 'gellum-business-hours' ),
-                                $day_name_localized, 
-                                $time_localized      
+                               /* translators: customers of the next available date and time the store will be open. */ esc_html__( 'The store is currently closed. Next opening: %1$s at %2$s.', 'gellum-business-hours' ),
+                                $day_name_localized,
+                                $time_localized
                             );
                         }
                     }
                 }
             }
-            return __( 'The store will remain closed for the next 7 days based on the current schedule.', 'gellum-business-hours' );
+            return esc_html__( 'The store will remain closed for the next 7 days based on the current schedule.', 'gellum-business-hours' );
         }
 
         public function check_store_open_status_on_checkout() {
@@ -455,9 +446,9 @@ if ( gellum_business_hours_check_woocommerce_active() ) {
             if ( ! $this->is_store_open() ) {
                 $message = $this->get_next_opening_time_message();
                 if ( function_exists('wc_add_notice') && ! wc_has_notice( $message, 'error' ) ) {
-                    wc_add_notice( $message, 'error' );
+                    wc_add_notice( $message, 'error' ); /* Display a customizable notice (using WooCommerce's native system) informing customers that the store is currently closed.*/
                 }
-                
+
                 add_filter( 'woocommerce_order_button_html', '__return_empty_string', 100 );
                 add_filter( 'woocommerce_cart_needs_payment', '__return_false', 100 );
 
@@ -478,7 +469,7 @@ if ( gellum_business_hours_check_woocommerce_active() ) {
             }
         }
 
-    } // End Class Gellum_Business_Hours
+    }
 
 
     function Gellum_Business_Hours_Instance() {
@@ -486,6 +477,6 @@ if ( gellum_business_hours_check_woocommerce_active() ) {
     }
     $GLOBALS['gellum_business_hours'] = Gellum_Business_Hours_Instance();
 
-    endif; // end if class_exists check
-    
-} // end if WooCommerce is active check
+    endif;
+
+}
