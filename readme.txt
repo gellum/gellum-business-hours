@@ -69,12 +69,10 @@ You can use the shortcode `[gellum_business_hours]` in any page, post, or widget
 == Screenshots ==
 
 1.  **Settings Page:** The main configuration screen showing the weekly schedule in a table format with status, opening, and closing time dropdowns.
-2.  **Store Closed Notice (Cart/Checkout):** Disables the cart and checkout if it's after hours. Generates a notification with WooCommerce notifications.
-3. **Shows how the shortcode Works:** The shortcode displays "Open" or "Closed. Opens in XX hours".
 
 == Changelog ==
 
-= 1.3.6 (May 25, 2025) =
+= 1.3.6 (May 22, 2025) =
 * Minor fixes
 
 = 1.3.5 (May 21, 2025) =
