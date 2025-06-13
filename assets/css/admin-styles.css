@@ -16,23 +16,23 @@
 }
 
 .gellum-business-hours-page h1 {
-    font-weight: 500; /* Adjust as per image */
-    font-size: 24px;  /* Adjust as per image */
+    font-weight: 500;
+    font-size: 24px;
     margin-bottom: 8px;
 }
 
 .gellum-business-hours-page .gellum-description {
     font-size: 14px;
-    color: #50575e; /* WordPress secondary text color */
+    color: #50575e;
     margin-bottom: 25px;
 }
 
 .gellum-settings-table-container {
     background-color: #fff;
-    border: 1px solid #ccd0d4; /* WordPress table border color */
-    border-radius: 8px; /* Rounded corners for the container */
+    border: 1px solid #ccd0d4;
+    border-radius: 8px;
     box-shadow: 0 1px 1px rgba(0,0,0,.04);
-    padding: 20px; /* Padding inside the container */
+    padding: 20px;
     margin-bottom: 20px;
 }
 
@@ -43,17 +43,17 @@
 }
 
 .gellum-business-hours-table thead th {
-    font-weight: 500; /* Bolder headers */
+    font-weight: 500;
     font-size: 13px;
-    color: #222; /* Darker color for headers */
-    border-bottom: 1px solid #e0e0e0; /* Separator line */
+    color: #222;
+    border-bottom: 1px solid #e0e0e0;
     padding: 12px 10px;
     text-align: left;
-    background-color: transparent; /* Remove default grey */
+    background-color: transparent;
 }
 
 .gellum-business-hours-table tbody tr {
-    border-bottom: 1px solid #f0f0f0; /* Lighter separator for rows */
+    border-bottom: 1px solid #f0f0f0;
 }
 .gellum-business-hours-table tbody tr:last-child {
     border-bottom: none;
@@ -67,7 +67,7 @@
 }
 
 .gellum-business-hours-table .gellum-day-cell span {
-    font-weight: 500; /* Make day name slightly bolder */
+    font-weight: 500;
 }
 
 /* Status Indicator and Select */
@@ -81,16 +81,16 @@
     width: 8px;  /* Smaller dot */
     height: 8px; /* Smaller dot */
     border-radius: 50%;
-    margin-right: 8px; /* Space between dot and select */
+    margin-right: 8px;
     flex-shrink: 0;
 }
 
 .gellum-business-hours-table .status-indicator.open {
-    background-color: #28a745; /* Green similar to image */
+    background-color: #28a745;
 }
 
 .gellum-business-hours-table .status-indicator.closed {
-    background-color: #dc3545; /* Red similar to image */
+    background-color: #dc3545;
 }
 
 .gellum-business-hours-table .gellum-status-select,
@@ -100,7 +100,7 @@
     border: 1px solid #ddd;
     padding: 6px 8px;
     font-size: 14px;
-    background-color: #fff; /* Ensure selects have white background */
+    background-color: #fff;
     box-shadow: inset 0 1px 2px rgba(0,0,0,.07);
 }
 
@@ -111,19 +111,19 @@
 
 /* Time cells - ensure selects fill available space or have a good min-width */
 .gellum-business-hours-table .gellum-time-cell select {
-    min-width: 120px; /* Adjust as needed */
+    min-width: 120px;
 }
 
 /* Save Changes Button Container */
 .gellum-submit-button-container {
     margin-top: 20px;
-    text-align: right; /* Align button to the right */
+    text-align: right;
 }
 
 .gellum-business-hours-page .gellum-save-button.button-primary {
-    background-color: #0073e6; /* Blue color from image */
+    background-color: #0073e6;
     border-color: #0073e6;
-    border-radius: 6px; /* Rounded corners for button */
+    border-radius: 6px;
     padding: 8px 18px;
     font-size: 14px;
     font-weight: 500;
