@@ -4,7 +4,7 @@ Tags: woocommerce, business hours, opening hours, ecommerce
 Donate link: https://gellum.com/opensource
 Requires at least: 6.2
 Tested up to: 6.8
-Stable tag: 1.3.6
+Stable tag: 1.3.8
 Requires PHP: 7.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -15,7 +15,7 @@ Manage your WooCommerce store's business hours. Disable checkout and display not
 
 == Description ==
 
-Gellum Business Hours allows WooCommerce store owners to easily define their operating schedule for each day of the week. When the store is outside of these hours, the plugin can:
+[Gellum](https://gellum.com) Business Hours allows WooCommerce store owners to easily define their operating schedule for each day of the week. When the store is outside of these hours, the plugin can:
 
 * Disable checkout functionality, preventing orders from being placed.
 * Display a customizable notice (using WooCommerce's native system) informing customers that the store is currently closed.
@@ -32,6 +32,10 @@ Features:
 * HPOS (High-Performance Order Storage) compatible.
 * Customizable admin interface with "Readex Pro" Google Font for a modern look.
 * Shortcode `[gellum_business_hours]` to display current store status on your website's frontend.
+
+### Suggestions? ###
+
+If you have suggestions for improving this plugin, such as fixing bugs or adding new features, please share them here: [https://gellum.com/opensource](https://gellum.com/opensource)
 
 == Installation ==
 
@@ -71,6 +75,12 @@ You can use the shortcode `[gellum_business_hours]` in any page, post, or widget
 1.  **Settings Page:** The main configuration screen showing the weekly schedule in a table format with status, opening, and closing time dropdowns.
 
 == Changelog ==
+
+= 1.3.8 (2025-06-12) =
+* Minor bugs have been fixed.
+
+= 1.3.7 (June 3, 2025) =
+* Minor bugs have been fixed.
 
 = 1.3.6 (May 22, 2025) =
 * Minor fixes
